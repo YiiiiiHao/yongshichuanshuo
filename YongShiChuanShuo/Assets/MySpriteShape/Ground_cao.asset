@@ -37,10 +37,10 @@ MonoBehaviour:
   m_CornerSprites:
   - m_CornerType: 0
     m_Sprites:
-    - {fileID: 91995237, guid: 85f306124aa388d41a60f1d3a1d05806, type: 3}
+    - {fileID: -1541799821, guid: 85f306124aa388d41a60f1d3a1d05806, type: 3}
   - m_CornerType: 1
     m_Sprites:
-    - {fileID: 1228004839, guid: 85f306124aa388d41a60f1d3a1d05806, type: 3}
+    - {fileID: 2123303072, guid: 85f306124aa388d41a60f1d3a1d05806, type: 3}
   - m_CornerType: 2
     m_Sprites:
     - {fileID: -1199291033, guid: 85f306124aa388d41a60f1d3a1d05806, type: 3}
