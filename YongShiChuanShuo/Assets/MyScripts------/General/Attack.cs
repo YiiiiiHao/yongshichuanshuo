@@ -16,6 +16,7 @@ public class Attack : MonoBehaviour
         //访问被攻击者的Character脚本，获取其当前血量，并减去攻击伤害，等于当前血量返还给被攻击者
         //被攻击者血量100，攻击伤害5，攻击者攻击，被攻击者血量减少5，等于95
         // collision.GetComponent<Character>().currentHealth -= damage;
+        //下面这个“？”表示如果GetComponent<Character>()返回null，则不执行后面的语句
         collision.GetComponent<Character>()?.TakeDamage(this);
     }
 }

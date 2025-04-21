@@ -18,9 +18,10 @@ public class Character : MonoBehaviour
     }
     
     void Update()
-    {
+    { 
         if(invulnerable)//触发invulnerable状态,受伤无敌状态
         {
+            //invulnerableCounter在Unity中设置数值，减去时间，直到为0，则恢复正常状态
          invulnerableCounter -= Time.deltaTime;//受到伤害后受伤无敌计时器开始
          if(invulnerableCounter<=0)
          {
