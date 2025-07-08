@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 
 public class PlayerAnimation : MonoBehaviour
-{ 
+{
     private Animator anim;
     private Rigidbody2D rb;
     private PhysicsCheck physicsCheck;//跳跃动作需要知道是否在地面上，所以需要获取PhysicsCheck组件里的isGround属性
@@ -27,6 +27,11 @@ public class PlayerAnimation : MonoBehaviour
         //根据y轴速度来设置跳跃动画
         anim.SetFloat("velocityY", rb.velocity.y);//y轴速度，跳跃
         anim.SetBool("isGround", physicsCheck.isGround);//是否在地面上
-        anim.SetBool("isCrouch",playerController.isCrouch);//是否处于蹲下状态
+        anim.SetBool("isCrouch", playerController.isCrouch);//是否处于蹲下状态
+    }
+
+    public void PlayHurt()
+    {
+        anim.SetTrigger("Hurt");//这里不要拼写错误
     }
 }

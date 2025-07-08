@@ -1,16 +1,18 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Events;
 
 public class Character : MonoBehaviour
 { 
     [Header("基本属性")]
-    public float maxHealth = 100;
+    public float maxHealth;
     public float currentHealth ;//当前生命值
     [Header("受伤无敌")]
     public float invulnerableDuration ;//受伤无敌持续时间
     private float invulnerableCounter ;//受伤无敌计时器
     public bool invulnerable ;//受伤无敌状态
+    public UnityEvent<Transform> onDakeDamage;//受到伤害事件
     private void Start()
     {
         currentHealth = maxHealth;
@@ -36,12 +38,15 @@ public class Character : MonoBehaviour
         {
             return;
         }
-        if(currentHealth-attack.damage>0)//如果受到伤害后生命值大于0，则扣除生命值，触发受伤无敌状态
+        if (currentHealth - attack.damage > 0)//如果受到伤害后生命值大于0，则扣除生命值，触发受伤无敌状态
         {
-        currentHealth -= attack.damage;
-        TriggerInvulnerable();//触发受伤无敌状态
+            currentHealth -= attack.damage;
+            TriggerInvulnerable();//触发受伤无敌状态
+            //触发受伤事件
+            onDakeDamage?.Invoke(attack.transform);//攻击者的transform
+             
         }
-        else if(currentHealth-attack.damage<=0)//如果受到伤害后生命值等于或小于0，则死亡，销毁对象
+        else if (currentHealth - attack.damage <= 0)//如果受到伤害后生命值等于或小于0，则死亡，销毁对象
         {
             currentHealth = 0;
             // Destroy(gameObject);

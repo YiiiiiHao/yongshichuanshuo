@@ -16,6 +16,8 @@ public class PlayerController : MonoBehaviour
     public Rigidbody2D rb;//用于驱动Rigidbody2D的Velocity属性
     [Header("基本参数")]
     public float speed = 5f;  //速度
+    public float runSpeed  ; //跑步速度
+    public float walkSpeed => speed * 0.5f; //走路速度
     public float jumpForce = 10f;
     public bool isCrouch;
     private float offstY;//记录站立时offstY的值
@@ -34,10 +36,35 @@ public class PlayerController : MonoBehaviour
         //staerted:按下按键瞬间则启用
         //按下空格键和右键（在PlayerInputControl里设置）时，调用Jump方法
         inputControl.GamePlay.Jump.started += Jump;
+
+
+        #region 强制走路
+        //****************************************************强制走路****************************************************
+        runSpeed = speed; //跑步速度一开始就确定下来
+        inputControl.GamePlay.WalkButton.performed += ctx =>
+        {
+            if (physicsCheck.isGround)
+            {
+                // Debug.Log(speed);
+                speed = walkSpeed;
+            }
+        };
+        inputControl.GamePlay.WalkButton.canceled += ctx =>
+        {
+            if (physicsCheck.isGround)
+            {
+                //   Debug.Log(speed);
+                  speed = runSpeed;
+            }
+        };
+        //****************************************************强制走路****************************************************
+        #endregion
+
+
         physicsCheck = GetComponent<PhysicsCheck>(); //获取PhysicsCheck组件
         capsuleCollider2D = GetComponent<CapsuleCollider2D>(); //获取CapsuleCollider2D组件
-        offstY = capsuleCollider2D.offset.y;//记录站立时offstY的值
-        sizeY = capsuleCollider2D.size.y;//记录站立时sizeY的值
+        offstY = capsuleCollider2D.offset.y;//记录站立时offstY的值,椭圆碰撞器 Y 的偏移值
+        sizeY = capsuleCollider2D.size.y;//记录站立时sizeY的值，椭圆碰撞器的 Y 轴大小
     }
 
 
@@ -60,6 +87,11 @@ public class PlayerController : MonoBehaviour
     {
         Move();
     }
+
+    // void OnTriggerEnter2D(Collider2D collision)
+    // {
+    //     Debug.Log(collision.name);
+    // }
     public void Move()
     {
         //如果是星露谷物语那种，可以用下面这行代码，并将RIgidbody2D的gravity属性设置为0，这里可以加上斜向运动的处理，
@@ -69,7 +101,7 @@ public class PlayerController : MonoBehaviour
         {
             rb.velocity = new Vector2(inputDirection.x * speed * Time.deltaTime, rb.velocity.y); //设置Rigidbody2D的Velocity属性,//不需要Y轴，所以保持原有的Y轴速度
         }
-        if(isCrouch == true)//下蹲状态则不能移动，speed为0
+        if (isCrouch == true)//下蹲状态则不能移动，speed为0
         {
             rb.velocity = new Vector2(inputDirection.x * 0 * Time.deltaTime, rb.velocity.y); //设置Rigidbody2D的Velocity属性,//不需要Y轴，所以保持原有的Y轴速度
         }

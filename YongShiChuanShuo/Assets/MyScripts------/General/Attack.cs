@@ -17,6 +17,7 @@ public class Attack : MonoBehaviour
         //被攻击者血量100，攻击伤害5，攻击者攻击，被攻击者血量减少5，等于95
         // collision.GetComponent<Character>().currentHealth -= damage;
         //下面这个“？”表示如果GetComponent<Character>()返回null，则不执行后面的语句
-        collision.GetComponent<Character>()?.TakeDamage(this);
+        //是询问对方是否挂载Character组件，如果挂载，则调用TakeDamage函数，否则不执行函数
+        collision.GetComponent<Character>()?.TakeDamage(this);//括号里的this是指当前的Attack脚本
     }
 }
