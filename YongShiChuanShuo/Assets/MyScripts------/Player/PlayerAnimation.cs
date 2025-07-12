@@ -30,7 +30,7 @@ public class PlayerAnimation : MonoBehaviour
         anim.SetFloat("velocityY", rb.velocity.y);//y轴速度，跳跃
         anim.SetBool("isGround", physicsCheck.isGround);//是否在地面上
         anim.SetBool("isCrouch", playerController.isCrouch);//是否处于蹲下状态
-        anim.SetBool("Dead",character .isDead);
+        anim.SetBool("Dead",playerController.isDead);//是否死亡
     }
 
     public void PlayHurt()//此脚本在Character脚本中，被（事件）调用

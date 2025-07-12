@@ -26,6 +26,7 @@ public class PlayerController : MonoBehaviour
     public float crouchSizeY;//角色下蹲时的sizeY
     public float hutForce;
     public bool isHurt;
+    public bool isDead;
 
 
     //Jump
@@ -89,7 +90,7 @@ public class PlayerController : MonoBehaviour
     {
         if (!isHurt)
         {
-        Move();
+            Move();
         }
     }
 
@@ -156,6 +157,13 @@ public class PlayerController : MonoBehaviour
         rb.velocity = Vector2.zero;//清空角色刚体速度
         Vector2 dir = new Vector2((transform.position.x - attake.position.x), 0).normalized;//normalized方法用于将向量标准化，使其长度为1
         rb.AddForce(dir * hutForce, ForceMode2D.Impulse); //添加一个反方向的力，用于受伤
-    } 
+    }
+
+    public void PlayerDead()
+    {
+        isDead = true;
+        inputControl.GamePlay.Disable(); //禁用PlayerInputControl类,玩家不再被控制
+
+    }
 
 }

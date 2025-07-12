@@ -14,6 +14,7 @@ public class Character : MonoBehaviour
     public bool invulnerable ;//受伤无敌状态
     public bool isDead ;//死亡状态
     public UnityEvent<Transform> onDakeDamage;//受到伤害事件
+    public UnityEvent onDie;//死亡事件
     private void Start()
     {
         currentHealth = maxHealth;
@@ -51,6 +52,7 @@ public class Character : MonoBehaviour
         {
             currentHealth = 0;
             isDead = true;
+            onDie?.Invoke();
             // Destroy(gameObject);
         }
     }
