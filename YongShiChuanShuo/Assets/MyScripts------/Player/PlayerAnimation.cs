@@ -8,12 +8,14 @@ public class PlayerAnimation : MonoBehaviour
     private Rigidbody2D rb;
     private PhysicsCheck physicsCheck;//跳跃动作需要知道是否在地面上，所以需要获取PhysicsCheck组件里的isGround属性
     private PlayerController playerController;
+    private Character character;
     void Awake()
     {
-        anim = GetComponent<Animator>();
+        anim = GetComponent<Animator>();//获取animator组件
         rb = GetComponent<Rigidbody2D>();
         physicsCheck = GetComponent<PhysicsCheck>();
         playerController = GetComponent<PlayerController>();
+        character = GetComponent<Character>();
     }
     void Update()
     {
@@ -28,9 +30,10 @@ public class PlayerAnimation : MonoBehaviour
         anim.SetFloat("velocityY", rb.velocity.y);//y轴速度，跳跃
         anim.SetBool("isGround", physicsCheck.isGround);//是否在地面上
         anim.SetBool("isCrouch", playerController.isCrouch);//是否处于蹲下状态
+        anim.SetBool("Dead",character .isDead);
     }
 
-    public void PlayHurt()
+    public void PlayHurt()//此脚本在Character脚本中，被（事件）调用
     {
         anim.SetTrigger("Hurt");//这里不要拼写错误
     }

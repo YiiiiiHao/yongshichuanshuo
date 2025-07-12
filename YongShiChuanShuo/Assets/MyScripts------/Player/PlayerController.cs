@@ -16,7 +16,7 @@ public class PlayerController : MonoBehaviour
     public Rigidbody2D rb;//用于驱动Rigidbody2D的Velocity属性
     [Header("基本参数")]
     public float speed = 5f;  //速度
-    public float runSpeed  ; //跑步速度
+    public float runSpeed; //跑步速度
     public float walkSpeed => speed * 0.5f; //走路速度
     public float jumpForce = 10f;
     public bool isCrouch;
@@ -24,6 +24,8 @@ public class PlayerController : MonoBehaviour
     private float sizeY;//记录站立时sizeY的值
     public float crouchOffstY;//角色下蹲时的offstY
     public float crouchSizeY;//角色下蹲时的sizeY
+    public float hutForce;
+    public bool isHurt;
 
 
     //Jump
@@ -54,7 +56,7 @@ public class PlayerController : MonoBehaviour
             if (physicsCheck.isGround)
             {
                 //   Debug.Log(speed);
-                  speed = runSpeed;
+                speed = runSpeed;
             }
         };
         //****************************************************强制走路****************************************************
@@ -85,7 +87,10 @@ public class PlayerController : MonoBehaviour
 
     void FixedUpdate()//方法用于驱动Rigidbody2D的Velocity属性
     {
+        if (!isHurt)
+        {
         Move();
+        }
     }
 
     // void OnTriggerEnter2D(Collider2D collision)
@@ -144,5 +149,13 @@ public class PlayerController : MonoBehaviour
             rb.AddForce(transform.up * jumpForce, ForceMode2D.Impulse); //添加一个向上方向的力，用于跳跃
         }
     }
+
+    public void GetHurt(Transform attake)
+    {
+        isHurt = true;
+        rb.velocity = Vector2.zero;//清空角色刚体速度
+        Vector2 dir = new Vector2((transform.position.x - attake.position.x), 0).normalized;//normalized方法用于将向量标准化，使其长度为1
+        rb.AddForce(dir * hutForce, ForceMode2D.Impulse); //添加一个反方向的力，用于受伤
+    } 
 
 }

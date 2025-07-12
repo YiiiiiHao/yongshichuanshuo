@@ -12,11 +12,12 @@ public class Character : MonoBehaviour
     public float invulnerableDuration ;//受伤无敌持续时间
     private float invulnerableCounter ;//受伤无敌计时器
     public bool invulnerable ;//受伤无敌状态
+    public bool isDead ;//死亡状态
     public UnityEvent<Transform> onDakeDamage;//受到伤害事件
     private void Start()
     {
         currentHealth = maxHealth;
-
+        isDead = false;
     }
     
     void Update()
@@ -44,11 +45,12 @@ public class Character : MonoBehaviour
             TriggerInvulnerable();//触发受伤无敌状态
             //触发受伤事件
             onDakeDamage?.Invoke(attack.transform);//攻击者的transform
-             
+
         }
         else if (currentHealth - attack.damage <= 0)//如果受到伤害后生命值等于或小于0，则死亡，销毁对象
         {
             currentHealth = 0;
+            isDead = true;
             // Destroy(gameObject);
         }
     }
