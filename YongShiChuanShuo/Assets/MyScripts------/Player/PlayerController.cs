@@ -10,6 +10,7 @@ public class PlayerController : MonoBehaviour
     private CapsuleCollider2D capsuleCollider2D;//椭圆碰撞器
     public PlayerInputControl inputControl;//获取角色控制器
     public PhysicsCheck physicsCheck;//获取角色的物理检测组件
+    private PlayerAnimation playerAnimation;//获取角色动画组件
 
     //要用Vector2的值来驱动RIgidbody2D的Velocity属性。
     public Vector2 inputDirection;//用于读取PlayerInputControl的MOve里的Vector2值 在Unity显示为-1 ~ 1
@@ -19,20 +20,28 @@ public class PlayerController : MonoBehaviour
     public float runSpeed; //跑步速度
     public float walkSpeed => speed * 0.5f; //走路速度
     public float jumpForce = 10f;
-    public bool isCrouch;
     private float offstY;//记录站立时offstY的值
     private float sizeY;//记录站立时sizeY的值
     public float crouchOffstY;//角色下蹲时的offstY
     public float crouchSizeY;//角色下蹲时的sizeY
     public float hutForce;
-    public bool isHurt;
-    public bool isDead;
+    [Header("状态")]
+    public bool isCrouch;//角色是否处于下蹲状态
+    public bool isHurt;//角色是否受伤
+    public bool isDead;//角色是否死亡
+    public bool isAttack;//角色是否攻击
 
 
     //Jump
 
     private void Awake()
     {
+        playerAnimation = GetComponent<PlayerAnimation>(); //获取PlayerAnimation组件
+        physicsCheck = GetComponent<PhysicsCheck>(); //获取PhysicsCheck组件
+        capsuleCollider2D = GetComponent<CapsuleCollider2D>(); //获取CapsuleCollider2D组件
+        offstY = capsuleCollider2D.offset.y;//记录站立时offstY的值,椭圆碰撞器 Y 的偏移值
+        sizeY = capsuleCollider2D.size.y;//记录站立时sizeY的值，椭圆碰撞器的 Y 轴大小
+
         inputControl = new PlayerInputControl(); //实例化PlayerInputControl类
         // rb = GetComponent<Rigidbody2D>(); //获取Rigidbody2D组件
 
@@ -64,10 +73,15 @@ public class PlayerController : MonoBehaviour
         #endregion
 
 
-        physicsCheck = GetComponent<PhysicsCheck>(); //获取PhysicsCheck组件
-        capsuleCollider2D = GetComponent<CapsuleCollider2D>(); //获取CapsuleCollider2D组件
-        offstY = capsuleCollider2D.offset.y;//记录站立时offstY的值,椭圆碰撞器 Y 的偏移值
-        sizeY = capsuleCollider2D.size.y;//记录站立时sizeY的值，椭圆碰撞器的 Y 轴大小
+
+        //***************攻击**************
+        inputControl.GamePlay.Attack.started += playerAttack; //添加攻击事件监听
+
+
+        //****************攻击**************
+
+
+
     }
 
 
@@ -88,7 +102,7 @@ public class PlayerController : MonoBehaviour
 
     void FixedUpdate()//方法用于驱动Rigidbody2D的Velocity属性
     {
-        if (!isHurt)
+        if (!isHurt &&!isAttack)
         {
             Move();
         }
@@ -151,6 +165,16 @@ public class PlayerController : MonoBehaviour
         }
     }
 
+    private void playerAttack(InputAction.CallbackContext context)
+    {
+        playerAnimation.PlayerAttack(); //播放攻击动画
+        isAttack = true;
+        Debug.Log("当前可以攻击");
+
+    }
+
+
+    #region UnityEvent
     public void GetHurt(Transform attake)
     {
         isHurt = true;
@@ -165,5 +189,6 @@ public class PlayerController : MonoBehaviour
         inputControl.GamePlay.Disable(); //禁用PlayerInputControl类,玩家不再被控制
 
     }
+    #endregion
 
 }
