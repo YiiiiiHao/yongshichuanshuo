@@ -25,6 +25,9 @@ public class PlayerController : MonoBehaviour
     public float crouchOffstY;//角色下蹲时的offstY
     public float crouchSizeY;//角色下蹲时的sizeY
     public float hutForce;
+    [Header("材质")]
+    public PhysicsMaterial2D normal;
+    public PhysicsMaterial2D wall;
     [Header("状态")]
     public bool isCrouch;//角色是否处于下蹲状态
     public bool isHurt;//角色是否受伤
@@ -98,11 +101,12 @@ public class PlayerController : MonoBehaviour
     void Update()
     {   //inputDirection用于读取PlayerInputControl的Move里的Vector2值,ReadValue<Vector2>()方法用于读取输入值
         inputDirection = inputControl.GamePlay.Move.ReadValue<Vector2>(); //读取PlayerInputControl的Move里的Vector2值
+        material(); //设置角色的材质
     }
 
     void FixedUpdate()//方法用于驱动Rigidbody2D的Velocity属性
     {
-        if (!isHurt &&!isAttack)
+        if (!isHurt && !isAttack)
         {
             Move();
         }
@@ -190,5 +194,10 @@ public class PlayerController : MonoBehaviour
 
     }
     #endregion
+
+    void material()
+    {
+        capsuleCollider2D.sharedMaterial = physicsCheck.isGround ? normal : wall; //设置角色的材质
+    }
 
 }
