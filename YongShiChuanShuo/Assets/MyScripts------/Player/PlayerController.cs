@@ -173,12 +173,12 @@ public class PlayerController : MonoBehaviour
     {
         playerAnimation.PlayerAttack(); //播放攻击动画
         isAttack = true;
-        Debug.Log("当前可以攻击");
-
     }
 
 
     #region UnityEvent
+
+    
     public void GetHurt(Transform attake)
     {
         isHurt = true;
