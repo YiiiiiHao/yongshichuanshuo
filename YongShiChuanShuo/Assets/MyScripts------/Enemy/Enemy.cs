@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using Unity.VisualScripting;
+using UnityEditor;
 using UnityEngine;
 
 public class Enemy : MonoBehaviour
@@ -15,8 +16,12 @@ public class Enemy : MonoBehaviour
     public Vector3 faceDir;
     [Header("转身计时器")]
     public float waitTime;
-    public float waitTimeCounter=0;
+    public float waitTimeCounter = 0;
     public bool wait;
+    public Transform attacker;
+    [Header("状态")]
+    public bool isHurt;
+    public bool isDead;
     void Awake()
     {
         rb = GetComponent<Rigidbody2D>();
@@ -33,12 +38,21 @@ public class Enemy : MonoBehaviour
         if ((physicsCheck.touchRightWall && faceDir.x > 0) || (physicsCheck.touchLeftWall && faceDir.x < 0))
         {
             wait = true;
+            anim.SetBool("Walk", false);
+        }
+        else
+        {
+            wait = false;
+            anim.SetBool("Walk", true);
         }
         TimeCounter();
     }
     void FixedUpdate()
     {
-        Move();//刚体移动，所以放在FixedUpdate中
+        if (!isHurt && !isDead)//不受伤 且 未死亡 才能移动
+        {
+            Move();//刚体移动，所以放在FixedUpdate中
+        }
     }
 
     public virtual void Move()
@@ -47,6 +61,9 @@ public class Enemy : MonoBehaviour
         rb.velocity = new Vector2(currentSpeed * faceDir.x * Time.deltaTime, rb.velocity.y);
     }
 
+    /// <summary>
+    /// 计时器
+    /// </summary>
     public void TimeCounter()
     {
         if (wait)
@@ -59,5 +76,35 @@ public class Enemy : MonoBehaviour
             waitTimeCounter = waitTime;//时间归0
             transform.localScale = new Vector3(faceDir.x, 1, 1);
         }
+    }
+
+    public void OnTakeDamage(Transform attackTrans)
+    {
+        attacker = attackTrans;//攻击者的transform转移到被攻击者。
+        //转身
+        if (attackTrans.position.x - transform.position.x > 0)//
+        {
+            transform.localScale = new Vector3(-1, 1, 1);
+        }
+        if (attackTrans.position.x - transform.position.x < 0)
+        {
+            transform.localScale = new Vector3(1, 1, 1);
+
+        }
+        isHurt = true;
+        new WaitForSeconds(0.5f);
+        isHurt = false;
+        anim.SetTrigger("Hurt");
+    }
+    public void OnDead()
+    {
+        gameObject.layer = 2;
+        anim.SetBool("Dead", true);
+        isDead = true;
+    }
+
+    public void OnDestroyAfterAnimation()
+    {
+         Destroy(this.gameObject);
     }
 }

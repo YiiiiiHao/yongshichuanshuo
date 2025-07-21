@@ -171,8 +171,11 @@ public class PlayerController : MonoBehaviour
 
     private void playerAttack(InputAction.CallbackContext context)
     {
+        if (physicsCheck.isGround)//在地面上才能攻击
+        {
         playerAnimation.PlayerAttack(); //播放攻击动画
         isAttack = true;
+        }
     }
 
 
