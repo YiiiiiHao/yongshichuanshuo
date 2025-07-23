@@ -10,9 +10,10 @@ public class Enemy : MonoBehaviour
     protected Animator anim;
     PhysicsCheck physicsCheck;
     [Header("基本参数")]
-    public float normalSpeed;
-    public float chaseSpeed;
-    public float currentSpeed;
+    public float normalSpeed;//正常速度
+    public float chaseSpeed;//追逐速度
+    public float currentSpeed;//当前速度
+    public float hurtForce;//受伤后弹开的力量
     public Vector3 faceDir;
     [Header("转身计时器")]
     public float waitTime;
@@ -91,10 +92,19 @@ public class Enemy : MonoBehaviour
             transform.localScale = new Vector3(1, 1, 1);
 
         }
+        //受伤被击退
         isHurt = true;
-        new WaitForSeconds(0.5f);
-        isHurt = false;
+
         anim.SetTrigger("Hurt");
+        Vector2 Dir = new Vector2(transform.position.x - attackTrans.position.x, 0).normalized;
+        StartCoroutine(OnHurt(Dir));//  调用携程固定写法
+     }
+    IEnumerator OnHurt(Vector2 Dir)
+    {
+        rb.AddForce(Dir * hurtForce, ForceMode2D.Impulse);
+        yield return new WaitForSeconds(0.5f);   //等待0.5秒
+        isHurt = false;
+
     }
     public void OnDead()
     {
